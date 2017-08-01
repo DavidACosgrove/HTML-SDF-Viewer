@@ -1,9 +1,6 @@
 
 /* CSS for fixed height table, with scrollbars where the headings always stay
 at the top.  Taken from https://stackoverflow.com/questions/21168521/scrollable-table-with-fixed-header-in-bootstrap
-The disadvantage is that the table has to given a fixed height in pixels, which
-means it's not ideal for smaller screens. However, in the case of HSV, we've
-already fixed the height of the JSME element, so that boat has already sailed.
 */
 
 table {
@@ -26,7 +23,8 @@ thead th {
 }
 
 tbody {
-    height: 600px;
+    /* height of table body 40% of viewport */
+    height: 40vh;
     overflow-y: auto;
 }
 
@@ -39,4 +37,9 @@ tbody td, thead th {
     width: 19.2%;
     float: left;
 }
-	
+
+/* controlling size of panel holding the JSME molecule display */
+#jsme_container {
+    /* height 40% of viewport */
+    height: 40vh;
+}
