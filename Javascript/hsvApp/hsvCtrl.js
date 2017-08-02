@@ -1,8 +1,9 @@
 //
 // Controller for hsvApp
-// David Cosgrove
-// david@cozchemix.co.uk
-//
+// Copyright David Cogrove, CozChemIx Limited 2017
+//  david@cozchemix.co.uk
+// Distributed under the BSD license, contained in the file license.txt in
+// the same directory as this file.
 
 hsvApp.controller("hsvCtrl", ['$scope', '$window',  function($scope, $window) {
     // The $window variable is needed because jsmeApplet is defined outside
@@ -12,10 +13,6 @@ hsvApp.controller("hsvCtrl", ['$scope', '$window',  function($scope, $window) {
     // carry on using it directly.  It doesn't feel right, but that's not its problem.
     $scope.whole_sdf = "";
     $scope.fileContent = "";
-
-    $scope.loadStartStructure = function( ) {
-	$window.jsmeApplet.readMolecule( $scope.startingStructure );
-    };
 
     // part of code for reading local SDFs.  Borrowed heavily from
     // https://veamospues.wordpress.com/2014/01/27/reading-files-with-angularjs
@@ -87,7 +84,7 @@ hsvApp.controller("hsvCtrl", ['$scope', '$window',  function($scope, $window) {
 	    // because they've come from an SDF.  This gives inadequate sorting
 	    // results. Try and convert to floats, if that doesn't work try dates,
 	    // and if that doesn't work use strings.
-	    // the plus forces conversion to a number, leaving a NaN if it can't
+	    // The plus forces conversion to a number, leaving a NaN if it can't
 	    // be done.  It's more reliable, according to a man on the Interweb,
 	    // than parseInt and parseFloat which will give numbers for 44.png,
 	    // for example.
@@ -146,8 +143,8 @@ hsvApp.controller("hsvCtrl", ['$scope', '$window',  function($scope, $window) {
 	$window.jsmeApplet.readMolFile( $scope.sdf_records.mol_records[$scope.mol_index[$scope.mol_counter]] );
     }
 
-    // take an SDF and split it into individual MOL records, and array of objects
-    // containing tagged data
+    // take an SDF and split it into arry of individual MOL records, and array
+    // of objects containing tagged data
     split_sdf = function(sdf_contents) {
 
 	$scope.all_sdf_tags = [];

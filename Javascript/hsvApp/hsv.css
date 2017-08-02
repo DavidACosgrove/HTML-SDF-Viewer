@@ -1,8 +1,16 @@
-
-/* CSS for fixed height table, with scrollbars where the headings always stay
-at the top.  Taken from https://stackoverflow.com/questions/21168521/scrollable-table-with-fixed-header-in-bootstrap
+/*
+CSS for hsv app
+Copyright David Cogrove, CozChemIx Limited 2017
+david@cozchemix.co.uk
+Distributed under the BSD license, contained in the file license.txt in
+the same directory as this file.
 */
 
+/*
+Styles for fixed height table, with scrollbars where the headings always stay
+at the top.  Taken from https://stackoverflow.com/questions/21168521/scrollable-table-with-fixed-header-in-bootstrap
+and lightly massaged. 
+*/
 table {
     width: 100%;
 }

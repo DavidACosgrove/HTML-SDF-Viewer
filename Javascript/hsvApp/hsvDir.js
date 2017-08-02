@@ -1,8 +1,9 @@
 //
 // Directives for hsvApp.
-// David Cosgrove
-// david@cozchemix.co.uk
-//
+// Copyright David Cogrove, CozChemIx Limited 2017
+//  david@cozchemix.co.uk
+// Distributed under the BSD license, contained in the file license.txt in
+// the same directory as this file.
 
 // part of code for reading local SDFs.  Borrowed heavily from
 // https://veamospues.wordpress.com/2014/01/27/reading-files-with-angularjs.
@@ -30,7 +31,7 @@ hsvApp.directive('readSdf', function($parse) {
     };
 });
 
-// check that the user has given a valid file
+// check that the user has given a file with at least a valid extension.
 check_molecule_file_ext = function(filename) {
     var valid_exts = [".sdf", ".mol"];
     file_ext = filename.substring(filename.lastIndexOf('.'));
