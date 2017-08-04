@@ -12,7 +12,7 @@ the same directory as this file.
     height: 40vh;
 }
 
-/* the container for the fixed-header table.
+/* the container for the fixed-header table. */
 #hsv-table-container {
     max-height: 35vh;
     overflow: auto;
