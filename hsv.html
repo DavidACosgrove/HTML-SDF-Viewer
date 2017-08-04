@@ -53,6 +53,7 @@
     <script type="text/javascript" language="javascript" src="Javascript/hsvApp/hsvCtrl.js"></script>
     <script type="text/javascript" language="javascript" src="Javascript/hsvApp/hsvDir.js"></script>
     <script type="text/javascript" language="javascript" src="Javascript/moment-with-locales.min.js"></script>
+    <script type="text/javascript" language="javascript" src="Javascript/fixed-table-header.min.js"></script>
     <link rel="stylesheet" href="Javascript/hsvApp/hsv.css">
     
   </head>
@@ -83,9 +84,9 @@
 	    <button ng-click="incrementMolCounter(10)">10th Next</button>
 	    <button ng-click="lastMolCounter()">Last</button>
 	  </div>
-	  <div class="table-responsive">
-	    <table class="table table-striped table-bordered" ng-if="mol_tagged_data">
-	      <thead>
+	  <div id="hsv-table-container">
+	    <table class="table table-striped table-bordered">
+	      <thead fix-head>
 		<tr>
 		  <th ng-repeat="tag in all_sdf_tags" ng-click="sortColumn(tag)">{{tag}}
 		    <span ng-show="descending_sort" class="fa fa-caret-down"></span>
@@ -94,7 +95,8 @@
 	      </thead>
 	      <tbody>
 		<tr ng-repeat="mol_ind in mol_index">
-		  <td ng-class="{danger: mol_tagged_data[mol_index[mol_counter]].Number==mol_tagged_data[mol_ind].Number}" ng-repeat="tag in all_sdf_tags"
+		  <td ng-class="{danger: mol_tagged_data[mol_index[mol_counter]].Number==mol_tagged_data[mol_ind].Number}"
+		      ng-repeat="tag in all_sdf_tags"
 		      ng-click="setMolCounter(mol_tagged_data[mol_ind].Number)">
 		    {{mol_tagged_data[mol_ind][tag]}}
 		  </td>

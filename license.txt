@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 HSV includes code from the following libraries, amongst others:
     JSME - http://peter-ertl.com/sme - BSD license
     moment.js - momentjs.com - MIT license
+    fixed-table-header - https://www.npmjs.com/package/angular-fixed-table-header - MIT license
     
 HSV uses code from the following libraries, amongst others:
     AngularJS - https://angularjs.org - MIT license (https://github.com/angular/angular.js/blob/master/LICENSE)
