@@ -10,6 +10,19 @@ the same directory as this file.
 #jsme_container {
     /* height 40% of viewport */
     height: 40vh;
+    width: 100%;
+    border: 2px solid #000000;
+}
+
+/* controlling size of panel holding the 3Dmol.js molecule display */
+#threedmol_container {
+    /* height 40% of viewport */
+    height: 40vh;
+    width: 100%;
+    /* it would be nice to have a border, but 3Dmol hard-codes absolute */
+    /* positions for the glviewer that put it left and above the border */
+    /* in a manner that looks really pants. */
+    /* border: 2px solid #000000; */
 }
 
 /* the container for the fixed-header table. */

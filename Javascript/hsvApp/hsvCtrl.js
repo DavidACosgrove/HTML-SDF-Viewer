@@ -13,16 +13,29 @@ hsvApp.controller("hsvCtrl", ['$scope', '$window',  function($scope, $window) {
     // carry on using it directly.  It doesn't feel right, but that's not its problem.
     $scope.whole_sdf = "";
     $scope.fileContent = "";
+    $scope.curr_dims = 2;
 
+    $scope.init_3dmol_viewer = function() {
+    	element = $('#threedmol_container');
+    	config = {
+	    backgroundColor: 'white',
+	    defaultcolors: $3Dmol.rasmolElementColors
+	};
+    	$scope.threed_mol_viewer = $3Dmol.createViewer(element, config);
+    	$scope.threed_mol_viewer.zoomTo();
+    	$scope.threed_mol_viewer.render();
+    };
+    $scope.init_3dmol_viewer();
+    
     // part of code for reading local SDFs.  Borrowed heavily from
     // https://veamospues.wordpress.com/2014/01/27/reading-files-with-angularjs
     // Named as attribute value by file input tag in html, called by directive named
     // in input tag.
     $scope.parseSDF = function($fileContent) {
 	$scope.whole_sdf = $fileContent;
-	$scope.sdf_records = split_sdf($scope.whole_sdf);
-	$scope.mol_tagged_data = $scope.sdf_records.tagged_data;
-	$scope.sdf_mols = $scope.sdf_records.mol_records;
+	var sdf_records = split_sdf($scope.whole_sdf);
+	$scope.mol_tagged_data = sdf_records.tagged_data;
+	$scope.sdf_mols = sdf_records.mol_records;
 	show_molecule();
     };
 
@@ -140,7 +153,21 @@ hsvApp.controller("hsvCtrl", ['$scope', '$window',  function($scope, $window) {
     };
 
     show_molecule = function() {
-	$window.jsmeApplet.readMolFile( $scope.sdf_records.mol_records[$scope.mol_index[$scope.mol_counter]] );
+	if( 2 === $scope.mol_tagged_data[$scope.mol_index[$scope.mol_counter]].Dimension) {
+	    $window.jsmeApplet.readMolFile($scope.sdf_mols[$scope.mol_index[$scope.mol_counter]]);
+	    $scope.threed_mol_viewer.clear();
+    	    $scope.threed_mol_viewer.render();
+	    $scope.curr_dims = 2;
+	} else {
+	    $scope.threed_mol_viewer.clear();
+	    $scope.threed_mol_viewer.addModel($scope.sdf_mols[$scope.mol_index[$scope.mol_counter]], 'sdf');
+    	    $scope.threed_mol_viewer.zoomTo();
+	    $scope.threed_mol_viewer.setStyle({}, {stick: {}});
+    	    $scope.threed_mol_viewer.render();
+	    $window.jsmeApplet.clear();
+	    $window.jsmeApplet.repaint();
+	    $scope.curr_dims = 3;
+	}
     }
 
     // take an SDF and split it into arry of individual MOL records, and array
@@ -179,6 +206,13 @@ hsvApp.controller("hsvCtrl", ['$scope', '$window',  function($scope, $window) {
 			$scope.all_sdf_tags.push('Name');
 		    }
 		}
+		// line 2 of the record may have dimension info (2D or 3D).
+		// Assume 2D if not present.
+		if(next_mol[1].length >= 21 && '3D' == next_mol[1].substr(20, 2)) {
+		    mol_td.Dimension = 3;
+		} else {
+		    mol_td.Dimension = 2;
+		}
 		mol_records.push(next_mol.join('\n'));
 		$scope.mol_index.push(mol_num - 1);
 		next_mol = [];
@@ -194,23 +228,18 @@ hsvApp.controller("hsvCtrl", ['$scope', '$window',  function($scope, $window) {
 		    // and finishes at the < after that. There can be any text
 		    // in between.
 		    if('>' === sdf_lines[i].charAt(0)) {
-			console.log('Found start of tag : ' + sdf_lines[i]);
 			var tag = sdf_lines[i].substr(1);
-			console.log('1 : ' + tag);
 			var ts = tag.indexOf('<');
 			// if ts is -1, there's no start for the tag name, so
 			// the line is corrupt. Just skip for now.
 			if(-1 != ts) {
 			    tag = tag.substr(ts + 1);
-			    console.log('2 : ' + tag);
 			    var tse = tag.indexOf('>');
 			    if(-1 != tse) {
 				tag = tag.substr(0, tse);
-				console.log('Tag = ' + tag + ' : ' + ts + ' : ' + tse);
 				if(-1 == $scope.all_sdf_tags.indexOf(tag)) {
 				    $scope.all_sdf_tags.push(tag);
 				}
-				// console.log("Tag : " + tag);
 				var data = '';
 				i++;
 				for(; i < sdf_lines.length; i++) {
@@ -224,24 +253,6 @@ hsvApp.controller("hsvCtrl", ['$scope', '$window',  function($scope, $window) {
 			    }
 			}
 		    }
-		    
-		    // if(0 == sdf_lines[i].indexOf('> <')) {
-		    // 	var tag = sdf_lines[i].trim().replace('> <', '').replace('>', '');
-		    // 	if(-1 == $scope.all_sdf_tags.indexOf(tag)) {
-		    // 	    $scope.all_sdf_tags.push(tag);
-		    // 	}
-		    // 	// console.log("Tag : " + tag);
-		    // 	var data = '';
-		    // 	i++;
-		    // 	for(; i < sdf_lines.length; i++) {
-		    // 	    var nl = sdf_lines[i].trim();
-		    // 	    if(0 == nl.length || nl == '$$$$') {
-		    // 		break;
-		    // 	    }
-		    // 	    data += sdf_lines[i];
-		    // 	}
-		    // 	mol_td[tag] = data;
-		    // }
 		}
 		// we've read all the tagged data for this molecule
 		// console.log("final mol_td : " + JSON.stringify(mol_td));

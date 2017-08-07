@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html>
   <!--
-      This page is a simple demonstration of using Peter Ertl's JSME molecule
-      editor (http://peter-ertl.com/jsme) (B. Bienfait and P. Ertl, JSME: a free
-      molecule editor in JavaScript, J. Cheminformatics 5:24 (2013)) and
-      AngularJS to display a multi-mol 2D SDF and associated data.
+      This page is a simple demonstration of using either JSME or 3DMol.js and
+      AngularJS to display a multi-mol SDF and associated data.
 
       Copyright David Cogrove, CozChemIx Limited 2017
       david@cozchemix.co.uk
       Distributed under the BSD license, contained in the file license.txt in
       the same directory as this file.
+
+      JSME : Peter Ertl's molecule editor
+        http://peter-ertl.com/jsme
+	B. Bienfait and P. Ertl, JSME: a free molecule editor in JavaScript,
+	J. Cheminformatics 5:24 (2013)) 
+      3Dmol.js :
+        http://3dmol.csb.pitt.edu
+	Nicholas Rego and David Koes
+	3Dmol.js: molecular visualization with WebGL
+	Bioinformatics (2015) 31 (8): 1322-1324 doi:10.1093/bioinformatics/btu829
     -->
   <head>
     
@@ -20,12 +28,6 @@
     
     <title>HSV - the HTML SDF Viewer</title>
     <script type="text/javascript" language="javascript" src="Javascript/JSME_2017-02-26/jsme/jsme.nocache.js"></script>
-    <script>
-	//this function will be called after the JavaScriptApplet code has been loaded.
-	function jsmeOnLoad() {
-	jsmeApplet = new JSApplet.JSME("jsme_container", "100%", "100%",{"options": "hydrogens, depict"});
-	}
-      </script>
 
     <!-- AngularJS (version 1) -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js"></script>
@@ -48,27 +50,22 @@
 
     <!-- Font Awesome icons, for the carets in the table sorting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    
-    <script type="text/javascript" language="javascript" src="Javascript/hsvApp/hsvApp.js"></script>
-    <script type="text/javascript" language="javascript" src="Javascript/hsvApp/hsvCtrl.js"></script>
-    <script type="text/javascript" language="javascript" src="Javascript/hsvApp/hsvDir.js"></script>
-    <script type="text/javascript" language="javascript" src="Javascript/moment-with-locales.min.js"></script>
-    <script type="text/javascript" language="javascript" src="Javascript/fixed-table-header.min.js"></script>
-    <link rel="stylesheet" href="Javascript/hsvApp/hsv.css">
-    
+
+    <!-- the 3Dmol.js WebGL 3D molecule viewer -->
+    <script src="http://3Dmol.csb.pitt.edu/build/3Dmol-nojquery.js"></script>
+        
   </head>
 
   
   <body>
-    <h2 align="center">Simple 2D SDF Browser</h2>
+    <h2 align="center">Simple SDF Browser</h2>
     <div class="container">
 	<div ng-app="hsvApp" ng-controller="hsvCtrl">
 	  Select SDF to display : <input type="file" accept=".sdf,.mol" read-sdf="parseSDF($fileContent)" />
 	  <div class="row">
 	    <div class="col-md-8">
-	      <div class="panel panel-default">
-		<div class="panel-body" id="jsme_container"></div>
-	      </div>
+	      <div id="jsme_container" ng-show="curr_dims === 2"></div>
+	      <div id="threedmol_container" ng-show="curr_dims === 3"></div>
 	    </div>
 	    <div class="col-md-4" ng-if="mol_tagged_data">
 	      <ul>
@@ -76,35 +73,49 @@
 	      </ul>
 	    </div>
 	  </div>
-	  <div class="row">
-	    <button ng-click="firstMolCounter(10)">First</button>
-	    <button ng-click="decrementMolCounter(10)">10th Previous</button>
-	    <button ng-click="decrementMolCounter(1)">Previous</button>
-	    <button ng-click="incrementMolCounter(1)">Next</button>
-	    <button ng-click="incrementMolCounter(10)">10th Next</button>
-	    <button ng-click="lastMolCounter()">Last</button>
-	  </div>
-	  <div id="hsv-table-container">
-	    <table class="table table-striped table-bordered">
-	      <thead fix-head>
-		<tr>
-		  <th ng-repeat="tag in all_sdf_tags" ng-click="sortColumn(tag)">{{tag}}
-		    <span ng-show="descending_sort" class="fa fa-caret-down"></span>
-		    <span ng-show="!descending_sort" class="fa fa-caret-up"></span></th>
-		</tr>
-	      </thead>
-	      <tbody>
-		<tr ng-repeat="mol_ind in mol_index">
-		  <td ng-class="{danger: mol_tagged_data[mol_index[mol_counter]].Number==mol_tagged_data[mol_ind].Number}"
-		      ng-repeat="tag in all_sdf_tags"
-		      ng-click="setMolCounter(mol_tagged_data[mol_ind].Number)">
-		    {{mol_tagged_data[mol_ind][tag]}}
-		  </td>
-		</tr>
-	      </tbody>
-	    </table>
+	  <div ng-show="mol_tagged_data">
+	    <div class="row">
+	      <button ng-click="firstMolCounter(10)">First</button>
+	      <button ng-click="decrementMolCounter(10)">10th Previous</button>
+	      <button ng-click="decrementMolCounter(1)">Previous</button>
+	      <button ng-click="incrementMolCounter(1)">Next</button>
+	      <button ng-click="incrementMolCounter(10)">10th Next</button>
+	      <button ng-click="lastMolCounter()">Last</button>
+	    </div>
+	    <div id="hsv-table-container">
+	      <table class="table table-striped table-bordered">
+		<thead fix-head>
+		  <tr>
+		    <th ng-repeat="tag in all_sdf_tags" ng-click="sortColumn(tag)">{{tag}}
+		      <span ng-show="descending_sort" class="fa fa-caret-down"></span>
+		      <span ng-show="!descending_sort" class="fa fa-caret-up"></span></th>
+		  </tr>
+		</thead>
+		<tbody>
+		  <tr ng-repeat="mol_ind in mol_index">
+		    <td ng-class="{danger: mol_tagged_data[mol_index[mol_counter]].Number==mol_tagged_data[mol_ind].Number}"
+			ng-repeat="tag in all_sdf_tags"
+			ng-click="setMolCounter(mol_tagged_data[mol_ind].Number)">
+		      {{mol_tagged_data[mol_ind][tag]}}
+		    </td>
+		  </tr>
+		</tbody>
+	      </table>
+	    </div>
 	  </div>
 	</div>
     </div>
+    <script type="text/javascript" language="javascript" src="Javascript/hsvApp/hsvApp.js"></script>
+    <script type="text/javascript" language="javascript" src="Javascript/hsvApp/hsvCtrl.js"></script>
+    <script type="text/javascript" language="javascript" src="Javascript/hsvApp/hsvDir.js"></script>
+    <script type="text/javascript" language="javascript" src="Javascript/moment-with-locales.min.js"></script>
+    <script type="text/javascript" language="javascript" src="Javascript/fixed-table-header.min.js"></script>
+    <link rel="stylesheet" href="Javascript/hsvApp/hsv.css">
+    <script>
+	//this function will be called after the JavaScriptApplet code has been loaded.
+	function jsmeOnLoad() {
+	jsmeApplet = new JSApplet.JSME("jsme_container", "100%", "100%",{"options": "hydrogens, depict"});
+	}
+    </script>
   </body>
 </html>
