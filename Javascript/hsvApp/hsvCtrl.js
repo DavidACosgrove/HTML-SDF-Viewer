@@ -189,23 +189,59 @@ hsvApp.controller("hsvCtrl", ['$scope', '$window',  function($scope, $window) {
 		    if(sdf_lines[i].trim() == "$$$$") {
 			break;
 		    }
-		    if(0 == sdf_lines[i].indexOf('> <')) {
-		    	var tag = sdf_lines[i].trim().replace('> <', '').replace('>', '');
-			if(-1 == $scope.all_sdf_tags.indexOf(tag)) {
-			    $scope.all_sdf_tags.push(tag);
-			}
-		    	// console.log("Tag : " + tag);
-			var data = '';
-			i++;
-			for(; i < sdf_lines.length; i++) {
-			    var nl = sdf_lines[i].trim();
-			    if(0 == nl.length || nl == '$$$$') {
-				break;
+		    // the CTFile docs from BioVia say that if a line starts
+		    // with >, it's tagged data, the tag starts at the next >
+		    // and finishes at the < after that. There can be any text
+		    // in between.
+		    if('>' === sdf_lines[i].charAt(0)) {
+			console.log('Found start of tag : ' + sdf_lines[i]);
+			var tag = sdf_lines[i].substr(1);
+			console.log('1 : ' + tag);
+			var ts = tag.indexOf('<');
+			// if ts is -1, there's no start for the tag name, so
+			// the line is corrupt. Just skip for now.
+			if(-1 != ts) {
+			    tag = tag.substr(ts + 1);
+			    console.log('2 : ' + tag);
+			    var tse = tag.indexOf('>');
+			    if(-1 != tse) {
+				tag = tag.substr(0, tse);
+				console.log('Tag = ' + tag + ' : ' + ts + ' : ' + tse);
+				if(-1 == $scope.all_sdf_tags.indexOf(tag)) {
+				    $scope.all_sdf_tags.push(tag);
+				}
+				// console.log("Tag : " + tag);
+				var data = '';
+				i++;
+				for(; i < sdf_lines.length; i++) {
+				    var nl = sdf_lines[i].trim();
+				    if(0 == nl.length || nl == '$$$$') {
+					break;
+				    }
+				    data += sdf_lines[i];
+				}
+				mol_td[tag] = data;
 			    }
-			    data += sdf_lines[i];
 			}
-			mol_td[tag] = data;
 		    }
+		    
+		    // if(0 == sdf_lines[i].indexOf('> <')) {
+		    // 	var tag = sdf_lines[i].trim().replace('> <', '').replace('>', '');
+		    // 	if(-1 == $scope.all_sdf_tags.indexOf(tag)) {
+		    // 	    $scope.all_sdf_tags.push(tag);
+		    // 	}
+		    // 	// console.log("Tag : " + tag);
+		    // 	var data = '';
+		    // 	i++;
+		    // 	for(; i < sdf_lines.length; i++) {
+		    // 	    var nl = sdf_lines[i].trim();
+		    // 	    if(0 == nl.length || nl == '$$$$') {
+		    // 		break;
+		    // 	    }
+		    // 	    data += sdf_lines[i];
+		    // 	}
+		    // 	mol_td[tag] = data;
+		    // }
 		}
 		// we've read all the tagged data for this molecule
 		// console.log("final mol_td : " + JSON.stringify(mol_td));
