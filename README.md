@@ -15,6 +15,8 @@ if the relevant flag is set in the SDF (characters 20 and 21 of line 2
 of the MOL record) it will use 3Dmol.js to display the 3D coordinates
 instead.
 
+Usage - open the file hsv.html in a browser - it's as easy as that.
+
 Note that 3Dmol.js sends your IP address back to base using the http
 call
 '''javascript
@@ -29,4 +31,4 @@ enabled.
 There are some relevant files in the TestData directory of the
 download if you want to try it on public data.
 
-
+Licensed under the BSD license - see license.txt for details.
