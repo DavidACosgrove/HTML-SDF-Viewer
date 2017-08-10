@@ -146,6 +146,7 @@ hsvApp.controller("hsvCtrl", ['$scope', '$window',  function($scope, $window) {
 	
 	// console.log(JSON.stringify(sort_pairs));
 	$scope.mol_index = [];
+	$scope.mol_counter = 0;
 	for(i = 0; i < sort_pairs.length; i++) {
 	    $scope.mol_index.push(sort_pairs[i].index - 1);
 	    show_molecule();
