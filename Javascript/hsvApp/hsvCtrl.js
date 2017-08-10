@@ -237,19 +237,30 @@ hsvApp.controller("hsvCtrl", ['$scope', '$window',  function($scope, $window) {
 			    var tse = tag.indexOf('>');
 			    if(-1 != tse) {
 				tag = tag.substr(0, tse);
-				if(-1 == $scope.all_sdf_tags.indexOf(tag)) {
-				    $scope.all_sdf_tags.push(tag);
-				}
 				var data = '';
 				i++;
+				var num_dl = 0;
 				for(; i < sdf_lines.length; i++) {
 				    var nl = sdf_lines[i].trim();
 				    if(0 == nl.length || nl == '$$$$') {
 					break;
 				    }
+				    num_dl++;
 				    data += sdf_lines[i];
 				}
-				mol_td[tag] = data;
+				// in principle the data can be on multiple
+				// lines ending with a blank line. In practice,
+				// these will make the table very ugly, so don't
+				// include them. They are unlikely to be helpful
+				// in this context.
+				if(1 == num_dl) {
+				    if(-1 == $scope.all_sdf_tags.indexOf(tag)) {
+					$scope.all_sdf_tags.push(tag);
+				    }
+				    mol_td[tag] = data;
+				} else {
+				    console.log('skipping ' + tag);
+				}
 			    }
 			}
 		    }
