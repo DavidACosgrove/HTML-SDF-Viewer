@@ -28,11 +28,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 HSV includes the following libraries, amongst others:
     JSME - http://peter-ertl.com/sme - BSD license
+    3Dmol.js - http://3dmol.csb.pitt.edu/doc/index.html - BSD license
     moment.js - momentjs.com - MIT license
     fixed-table-header - https://www.npmjs.com/package/angular-fixed-table-header - MIT license
     
 HSV uses code from the following libraries, amongst others:
     AngularJS - https://angularjs.org - MIT license (https://github.com/angular/angular.js/blob/master/LICENSE)
     Bootstrap - getbootstrap.com - MIT license (https://github.com/twbs/bootstrap/blob/master/LICENSE)
-     JQuery - jquery.org - MIT license (https://jquery.org/license/)
+    JQuery - jquery.org - MIT license (https://jquery.org/license/)
      
