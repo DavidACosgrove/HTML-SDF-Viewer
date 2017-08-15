@@ -1,6 +1,6 @@
 # HSV - an HTML SDF Viewer
 
-This is a small web app that allows the user to browse the contents of
+This is a small web app that allows the user to examine the contents of
 a 2D or 3D SDF in a browser.  Any tagged data records are tabulated
 and displayed alongside the molecule view for ease of reference. The
 purpose is to provide a consistent interface for this simple tool
@@ -21,6 +21,12 @@ capabilities, for example the columns can be sorted in ascending and
 descending order and clicking on a row will cause the display of the
 relevant molecule.
 
+If viewing a 2D file, the JSME viewer provides some extra
+functionality - right-clicking in the window brings up a context menu
+allowing the copying to the clipboard of the molecule structure in
+various formats (SMILES, InChI key, etc.) and also the possibility of
+performing a Google search using the InChI key.
+
 If the formatting of the 3D browser (if viewing a 3D SDF) or the table
 looks a bit odd (headers not aligned with columns, for example) try
 tweaking the width of the browser window. This forces a recalculation
@@ -29,9 +35,9 @@ work. I am trying to find out why this happens in order to fix it.
 
 Note that 3Dmol.js sends your IP address back to base using the http
 call
-'''javascript
+```javascript
 $.get("https://3dmol.csb.pitt.edu/track/report.cgi");
-'''
+```
 to help them
 assess usage and demonstrate value to their funding agencies.  This
 can be disabled if you don't want that, by editing and recompiling the
